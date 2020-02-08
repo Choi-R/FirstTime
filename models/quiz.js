@@ -15,21 +15,23 @@ const quizSchema = new Schema({
 
 const Quiz = mongoose.model('Quiz', quizSchema);
 
-Quiz.all = function () {
-    return new Promise((resolve, reject) => {
-        Quiz
-            .find()
-            // .select([
-            //     'name', 'questions'
-            // ])
-            .populate('questions')
-            .then(result => {
-                resolve(result)
-            })
-            .catch(err => {
-                reject(err)
-            })
-    })
-}
+// Quiz.all = function () {
+//     return new Promise((resolve, reject) => {
+//         Quiz
+//             .find()
+//             // .select([
+//             //     'name', 'questions'
+//             // ])
+//             .populate({
+//                 path: 'questions',
+//             })
+//             .then(result => {
+//                 resolve(result)
+//             })
+//             .catch(err => {
+//                 reject(err)
+//             })
+//     })
+// }
 
 module.exports = Quiz;

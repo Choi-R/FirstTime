@@ -5,11 +5,8 @@ function create(req, res) {
     if (!req.headers.authorization) {
         return error(res, "Haven't login yet", 401)
     }
-    // if(process.env.SECRET_KEY != 'roomMaster'){
-    //     return error(res, "Only Room Master can create question!", 401)
-    // }
+
     let newQuestion = new Question({
-        //question_id: ...
         problem: req.body.problem,
         options: req.body.options,
         answer: req.body.answer
@@ -34,8 +31,19 @@ function findAll(req, res) {
         })
 }
 
+function remove(req, res) {
+    Question.deleteOne({ _id: req.params.id })
+        .then(data => {
+         success(res, data, 200)
+        })
+        .catch(err => {
+         error(res, err, 422)
+        })
+}
+
 module.exports = {
     create,
-    findAll
+    findAll,
+    remove
 }
 //

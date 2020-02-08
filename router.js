@@ -13,10 +13,13 @@ router.get('/players', player.findAll);
 router.route('/questions')
     .post(question.create)
     .get(question.findAll)
+router.delete('/questions/:id', question.remove)
 
 // Quiz router
 router.post('/quizes',quiz.create)
 router.put('/quizes/:id',quiz.addQuestion)
 router.get('/quizes', quiz.findAll)
+router.post('/quizes-answer/:id', quiz.answer)
+router.delete('/quizes/:id', quiz.remove)
 
 module.exports = router;

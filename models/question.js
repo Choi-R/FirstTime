@@ -18,7 +18,7 @@ const questionSchema = new Schema({
     },
     answer: {
         type: String,
-        required: "Only answer with one of the available options"
+        required: true
     }
 })
 

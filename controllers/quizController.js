@@ -12,7 +12,6 @@ function create(req, res) {
 
     let newQuiz = new Quiz({
         name: req.body.name,
-        questions:[]
     })
 
     newQuiz.save()
@@ -52,6 +51,10 @@ async function addQuestion(req, res) {
 
 function findAll(req, res) {
     Quiz.find()
+        .populate({
+            path: 'questions',
+            select: ["-__v"]
+        })
         .then(data => {
             success(res, data, 200)
         })
@@ -60,8 +63,46 @@ function findAll(req, res) {
         })
 }
 
+async function answer(req, res) {
+    try {
+        let score = await 0
+        let data = await Quiz.findById(req.params.id)
+
+        for (let i = 0; i < data.questions.length; i++) {
+            let theQuestion = await Question.findById(data.questions[i])
+            let correctAnswer = await theQuestion.answer
+            let playerAnswer = await req.body.answer[i]
+
+            if (playerAnswer == correctAnswer) {
+                console.log(`Correct! The answer is ${correctAnswer}`)
+                score += 1
+            }
+            else {
+                console.log(`Wrong! The correct answer is ${correctAnswer}, while your answer is ${playerAnswer}`)
+            }
+        }
+        success(res, `Your score is ${score}\/${data.questions.length}`, 200)
+    }
+    catch (err) {
+        error(res, err, 422)
+    }
+}
+
+function remove(req, res) {
+    Quiz.deleteOne({ _id: req.params.id })
+        .then(data => {
+            success(res, data, 200)
+        })
+        .catch(err => {
+            error(res, err, 422)
+        })
+}
+
+
 module.exports = {
     create,
     addQuestion,
-    findAll
+    findAll,
+    answer,
+    remove
 }
