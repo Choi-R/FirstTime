@@ -5,11 +5,12 @@ function auth(req, res, next){
     let token = req.headers.authorization;
     try{
         let payload = jwt.verify(token, process.env.SECRET_KEY);
-        req.headers.authorization = payload._id;
-        req.headers.role = payload.role;
+        if (payload.role != 'roomMaster') {
+            return error(res, 'Only Room Master can use this feature', 422)
+        }
         next()
     }
-    catch(){
+    catch(err){
         return error(res, "Invalid token", 401)
     }
 }

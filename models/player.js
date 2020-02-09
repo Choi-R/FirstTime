@@ -11,9 +11,7 @@ const playerSchema = new Schema({
         type: String,
         required: "Password is still blank"
     },
-    secret_key: {
-        type: String
-    }
+    secret: String
 })
 
 const Player = mongoose.model('Player', playerSchema);

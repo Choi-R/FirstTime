@@ -6,8 +6,7 @@ const { success, error } = require('../helpers/response.js')
 function create(req, res) {
     let newPlayer = new Player({
         name: req.body.name,
-        password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)),
-        secret_key: req.body.secret_key
+        password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10))
     });
 
     newPlayer.save()
@@ -23,17 +22,20 @@ function login(req, res) {
     Player.findOne({ name: req.body.name })
         .then(data => {
             if (bcrypt.compareSync(req.body.password, data.password)) {
-
-                let token = jwt.sign({ _id: data._id, role: 'player' }, process.env.SECRET_KEY);
-
+                if (req.body.secret == "roomMaster") {
+                    let token = jwt.sign({ _id: data._id, role: 'roomMaster' }, process.env.SECRET_KEY);
+                }
+                else {
+                    let token = jwt.sign({ _id: data._id, role: 'player' }, process.env.SECRET_KEY);
+                }
                 success(res, token, 200)
             }
             else {
-                error(res, "Password is wrong", 402);
+                error(res, "Password is wrong", 422);
             }
         })
         .catch(() => {
-            error(res, "Name doesn't seem to be exist", 401)
+            error(res, "Name doesn't seem to be exist", 422)
         })
 }
 
